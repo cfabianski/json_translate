@@ -1,7 +1,8 @@
+sudo: false
 rvm:
   - 2.3.0
-  - rbx
-  - jruby-19mode
 gemfile:
   - test/gemfiles/Gemfile.rails-5.0.x
 matrix:
+addons:
+  postgresql: "9.4"
