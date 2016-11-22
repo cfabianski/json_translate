@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'test_helper'
 
-class TranslatesTest < HstoreTranslate::Test
+class TranslatesTest < JSONTranslate::Test
   def test_assigns_in_current_locale
     I18n.with_locale(:en) do
       p = Post.new(:title => "English Title")

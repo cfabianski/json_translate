@@ -1,14 +1,14 @@
 $:.push File.expand_path('../lib', __FILE__)
-require 'hstore_translate/version'
+require 'json_translate/version'
 
 Gem::Specification.new do |s|
-  s.name              = 'hstore_translate'
-  s.version           = HstoreTranslate::VERSION
-  s.summary           = "Rails I18n library for ActiveRecord model/data translation using PostgreSQL's hstore datatype."
+  s.name              = 'json_translate'
+  s.version           = JSONTranslate::VERSION
+  s.summary           = "Rails I18n library for ActiveRecord model/data translation using PostgreSQL's JSONB datatype."
   s.description       = "#{s.summary} Translations are stored directly in the model table rather than shadow tables."
-  s.authors           = ['Rob Worley']
-  s.email             = 'robert.worley@gmail.com'
-  s.homepage          = 'https://github.com/robworley/hstore_translate'
+  s.authors           = ["Rob Worley", "Cédric Fabianski"]
+  s.email             = 'cfabianski@me.com'
+  s.homepage          = 'https://github.com/cfabiaski/json_translate'
   s.platform          = Gem::Platform::RUBY
   s.license           = 'MIT'
 

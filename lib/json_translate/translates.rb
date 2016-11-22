@@ -1,4 +1,4 @@
-module HstoreTranslate
+module JSONTranslate
   module Translates
     SUFFIX = "_translations"
 
@@ -10,19 +10,18 @@ module HstoreTranslate
       self.translated_attrs = attrs
 
       attrs.each do |attr_name|
-        serialize "#{attr_name}#{SUFFIX}", ActiveRecord::Coders::Hstore unless HstoreTranslate::native_hstore?
-
         define_method attr_name do
-          read_hstore_translation(attr_name)
+          read_json_translation(attr_name)
         end
 
         define_method "#{attr_name}=" do |value|
-          write_hstore_translation(attr_name, value)
+          write_json_translation(attr_name, value)
         end
 
         define_singleton_method "with_#{attr_name}_translation" do |value, locale = I18n.locale|
           quoted_translation_store = connection.quote_column_name("#{attr_name}#{SUFFIX}")
-          where("#{quoted_translation_store} @> hstore(:locale, :value)", locale: locale, value: value)
+          translation_hash = { "#{locale}" => value }
+          where("#{quoted_translation_store} @> :translation::jsonb", translation: translation_hash.to_json)
         end
       end
 
@@ -36,26 +35,26 @@ module HstoreTranslate
     end
 
     module InstanceMethods
-      def disable_fallback(&block)
-        toggle_fallback(enabled = false, &block)
+      def disable_fallback
+        toggle_fallback(false)
       end
 
-      def enable_fallback(&block)
-        toggle_fallback(enabled = true, &block)
+      def enable_fallback
+        toggle_fallback(true)
       end
 
       protected
 
-      def hstore_translate_fallback_locales(locale)
+      def json_translate_fallback_locales(locale)
         return if @enabled_fallback == false || !I18n.respond_to?(:fallbacks)
         I18n.fallbacks[locale]
       end
 
-      def read_hstore_translation(attr_name, locale = I18n.locale)
+      def read_json_translation(attr_name, locale = I18n.locale)
         translations = send("#{attr_name}#{SUFFIX}") || {}
         translation  = translations[locale.to_s]
 
-        if fallback_locales = hstore_translate_fallback_locales(locale)
+        if fallback_locales = json_translate_fallback_locales(locale)
           fallback_locales.each do |fallback_locale|
             t = translations[fallback_locale.to_s]
             if t && !t.empty? # differs from blank?
@@ -68,7 +67,7 @@ module HstoreTranslate
         translation
       end
 
-      def write_hstore_translation(attr_name, value, locale = I18n.locale)
+      def write_json_translation(attr_name, value, locale = I18n.locale)
         translation_store = "#{attr_name}#{SUFFIX}"
         translations = send(translation_store) || {}
         send("#{translation_store}_will_change!") unless translations[locale.to_s] == value
@@ -88,9 +87,9 @@ module HstoreTranslate
         return method_missing_without_translates(method_name, *args) unless translated_attr_name
 
         if assigning
-          write_hstore_translation(translated_attr_name, args.first, locale)
+          write_json_translation(translated_attr_name, args.first, locale)
         else
-          read_hstore_translation(translated_attr_name, locale)
+          read_json_translation(translated_attr_name, locale)
         end
       end
 
@@ -120,7 +119,7 @@ module HstoreTranslate
         [translated_attr_name, locale, assigning]
       end
 
-      def toggle_fallback(enabled, &block)
+      def toggle_fallback(enabled)
         if block_given?
           old_value = @enabled_fallback
           begin

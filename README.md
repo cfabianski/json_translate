@@ -1,22 +1,22 @@
-# hstore_translate
+# JSON Translate
 
 Rails I18n library for ActiveRecord model/data translation using PostgreSQL's
-hstore datatype. It provides an interface inspired by
+JSONB datatype. It provides an interface inspired by
 [Globalize3](https://github.com/svenfuchs/globalize3) but removes the need to
 maintain separate translation tables.
 
-[![Build Status](https://api.travis-ci.org/robworley/hstore_translate.png)](https://travis-ci.org/robworley/hstore_translate)
+[![Build Status](https://api.travis-ci.org/cfabianski/json_translate.png)](https://travis-ci.org/cfabianski/json_translate)
 [![License](http://img.shields.io/badge/license-mit-brightgreen.svg)](COPYRIGHT)
-[![Code Climate](https://codeclimate.com/github/robworley/hstore_translate.png)](https://codeclimate.com/github/robworley/hstore_translate)
+[![Code Climate](https://codeclimate.com/github/cfabianski/json_translate.png)](https://codeclimate.com/github/cfabianski/json_translate)
 
 ## Requirements
 
-* ActiveRecord > 3.1.0 (4+ for JRuby)
+* ActiveRecord > 5.0.0 (4+ for JRuby)
 * I18n
 
 ## Installation
 
-gem install hstore_translate
+gem install json_translate
 
 When using bundler, put it in your Gemfile:
 
@@ -26,13 +26,7 @@ source 'https://rubygems.org'
 gem 'activerecord'
 gem 'pg', :platform => :ruby
 gem 'activerecord-jdbcpostgresql-adapter', :platform => :jruby
-gem 'hstore_translate'
-```
-
-For ActiveRecord < 4.0 you'll also want to add:
-
-```ruby
-gem 'activerecord-postgres-hstore', '~> 0.7.0'
+gem 'json_translate'
 ```
 
 ## Model translations
@@ -63,22 +57,22 @@ post.title # => This database rocks!
 post.title_he # => אתר זה טוב
 ```
 
-To find records using translations without constructing hstore queries by hand:
+To find records using translations without constructing JSONB queries by hand:
 
 ```ruby
 Post.with_title_translation("This database rocks!") # => #<ActiveRecord::Relation ...>
 Post.with_title_translation("אתר זה טוב", :he) # => #<ActiveRecord::Relation ...>
 ```
 
-In order to make this work, you'll need to define an hstore column for each of
+In order to make this work, you'll need to define an JSONB column for each of
 your translated attributes, using the suffix "_translations":
 
 ```ruby
 class CreatePosts < ActiveRecord::Migration
   def up
     create_table :posts do |t|
-      t.column :title_translations, 'hstore'
-      t.column :body_translations,  'hstore'
+      t.column :title_translations, 'jsonb'
+      t.column :body_translations,  'jsonb'
       t.timestamps
     end
   end

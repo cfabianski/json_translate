@@ -1,3 +1,3 @@
-module HstoreTranslate
+module JSONTranslate
   VERSION = "1.0.1"
 end
