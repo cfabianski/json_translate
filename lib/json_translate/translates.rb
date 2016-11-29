@@ -24,11 +24,9 @@ module JSONTranslate
         end
       end
 
-      alias_method_chain :respond_to?, :translates
-      alias_method_chain :method_missing, :translates
+      send(:prepend, ActiveRecordWithJSONTranslate)
     end
 
-    # Improve compatibility with the gem globalize
     def translates?
       included_modules.include?(InstanceMethods)
     end
