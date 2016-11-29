@@ -5,9 +5,8 @@ module JSONTranslate
     def translates(*attrs)
       include InstanceMethods
 
-      class_attribute :translated_attrs
-      alias_attribute :translated_attribute_names, :translated_attrs # Improve compatibility with the gem globalize
-      self.translated_attrs = attrs
+      class_attribute :translated_attribute_names
+      self.translated_attribute_names = attrs
 
       attrs.each do |attr_name|
         define_method attr_name do
@@ -113,7 +112,7 @@ module JSONTranslate
         return unless /\A(?<attribute>[a-z_]+)_(?<locale>[a-z]{2})(?<assignment>=?)\z/ =~ method_name
 
         translated_attr_name = attribute.to_sym
-        return unless translated_attrs.include?(translated_attr_name)
+        return unless translated_attribute_names.include?(translated_attr_name)
 
         locale    = locale.to_sym
         assigning = assignment.present?
