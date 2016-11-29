@@ -45,8 +45,10 @@ module JSONTranslate
 
       protected
 
+      attr_reader :enabled_fallback
+
       def json_translate_fallback_locales(locale)
-        return if @enabled_fallback == false || !I18n.respond_to?(:fallbacks)
+        return if enabled_fallback == false || !I18n.respond_to?(:fallbacks)
         I18n.fallbacks[locale]
       end
 
