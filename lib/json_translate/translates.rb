@@ -1,6 +1,6 @@
 module JSONTranslate
   module Translates
-    SUFFIX = "_translations"
+    SUFFIX = "_translations".freeze
 
     def translates(*attrs)
       include InstanceMethods
@@ -53,7 +53,7 @@ module JSONTranslate
       end
 
       def read_json_translation(attr_name, locale = I18n.locale)
-        translations = send("#{attr_name}#{SUFFIX}") || {}
+        translations = public_send("#{attr_name}#{SUFFIX}") || {}
         translation  = translations[locale.to_s]
 
         if fallback_locales = json_translate_fallback_locales(locale)
@@ -71,10 +71,10 @@ module JSONTranslate
 
       def write_json_translation(attr_name, value, locale = I18n.locale)
         translation_store = "#{attr_name}#{SUFFIX}"
-        translations = send(translation_store) || {}
-        send("#{translation_store}_will_change!") unless translations[locale.to_s] == value
+        translations = public_send(translation_store) || {}
+        public_send("#{translation_store}_will_change!") unless translations[locale.to_s] == value
         translations[locale.to_s] = value
-        send("#{translation_store}=", translations)
+        public_send("#{translation_store}=", translations)
         value
       end
 
