@@ -10,6 +10,10 @@ class Post < ActiveRecord::Base
   translates :title
 end
 
+class PostDetailed < Post
+  translates :comment
+end
+
 class JSONTranslate::Test < Minitest::Test
   class << self
     def prepare_database
@@ -41,6 +45,7 @@ class JSONTranslate::Test < Minitest::Test
       connection = establish_connection(db_config)
       connection.create_table(:posts, :force => true) do |t|
         t.column :title_translations, 'jsonb'
+        t.column :comment_translations, 'jsonb'
       end
     end
   end
