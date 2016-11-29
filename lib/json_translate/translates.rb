@@ -59,7 +59,7 @@ module JSONTranslate
         if fallback_locales = json_translate_fallback_locales(locale)
           fallback_locales.each do |fallback_locale|
             t = translations[fallback_locale.to_s]
-            if t && !t.empty? # differs from blank?
+            if t.present?
               translation = t
               break
             end
@@ -110,13 +110,13 @@ module JSONTranslate
       # Returns the attribute name Symbol, locale Symbol, and a Boolean
       # indicating whether or not the caller is attempting to assign a value.
       def parse_translated_attribute_accessor(method_name)
-        return unless method_name =~ /\A([a-z_]+)_([a-z]{2})(=?)\z/
+        return unless /\A(?<attribute>[a-z_]+)_(?<locale>[a-z]{2})(?<assignment>=?)\z/ =~ method_name
 
-        translated_attr_name = $1.to_sym
+        translated_attr_name = attribute.to_sym
         return unless translated_attrs.include?(translated_attr_name)
 
-        locale    = $2.to_sym
-        assigning = $3.present?
+        locale    = locale.to_sym
+        assigning = assignment.present?
 
         [translated_attr_name, locale, assigning]
       end
