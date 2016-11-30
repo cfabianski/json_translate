@@ -11,7 +11,7 @@ maintain separate translation tables.
 
 ## Requirements
 
-* ActiveRecord > 5.0.0 (4+ for JRuby)
+* ActiveRecord >= 4.2.0
 * I18n
 
 ## Installation
