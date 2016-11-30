@@ -2,11 +2,22 @@ module JSONTranslate
   module Translates
     SUFFIX = "_translations".freeze
 
+
     def translates(*attrs)
       include InstanceMethods
 
-      class_attribute :translated_attribute_names
+      class_attribute :translated_attribute_names, :permitted_translated_attributes
+
       self.translated_attribute_names = attrs
+      self.permitted_translated_attributes = [
+        *self.ancestors
+          .select {|klass| klass.respond_to?(:permitted_translated_attributes) }
+          .map(&:permitted_translated_attributes),
+        *attrs.product(I18n.available_locales)
+          .map { |attribute, locale| :"#{attribute}_#{locale}" }
+      ].flatten.compact
+
+      puts "PermittedTranslatedAttributes #{permitted_translated_attributes}"
 
       attrs.each do |attr_name|
         define_method attr_name do

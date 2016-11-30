@@ -164,4 +164,8 @@ class TranslatesTest < JSONTranslate::Test
     I18n.with_locale(:fr) { assert_equal "Un livre unique", p.comment }
     I18n.with_locale(:fr) { assert_equal "Alice au pays des merveilles", p.title }
   end
+
+  def test_permitted_translated_attributes
+    assert_equal [:title_en, :title_fr, :comment_en, :comment_fr], PostDetailed.permitted_translated_attributes
+  end
 end
