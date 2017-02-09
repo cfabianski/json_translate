@@ -17,8 +17,6 @@ module JSONTranslate
           .map { |attribute, locale| :"#{attribute}_#{locale}" }
       ].flatten.compact
 
-      puts "PermittedTranslatedAttributes #{permitted_translated_attributes}"
-
       attrs.each do |attr_name|
         define_method attr_name do
           read_json_translation(attr_name)
