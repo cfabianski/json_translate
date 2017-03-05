@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.description       = "#{s.summary} Translations are stored directly in the model table rather than shadow tables."
   s.authors           = ["Rob Worley", "Cédric Fabianski"]
   s.email             = 'cfabianski@me.com'
-  s.homepage          = 'https://github.com/cfabiaski/json_translate'
+  s.homepage          = 'https://github.com/cfabianski/json_translate'
   s.platform          = Gem::Platform::RUBY
   s.license           = 'MIT'
 
