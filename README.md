@@ -1,13 +1,14 @@
+[![Gem Version](https://badge.fury.io/rb/json_translate.svg)](https://badge.fury.io/rb/json_translate)
+[![Build Status](https://api.travis-ci.org/cfabianski/json_translate.png)](https://travis-ci.org/cfabianski/json_translate)
+[![License](http://img.shields.io/badge/license-mit-brightgreen.svg)](COPYRIGHT)
+[![Code Climate](https://codeclimate.com/github/cfabianski/json_translate.png)](https://codeclimate.com/github/cfabianski/json_translate)
+
 # JSON Translate
 
 Rails I18n library for ActiveRecord model/data translation using PostgreSQL's
 JSONB datatype. It provides an interface inspired by
 [Globalize3](https://github.com/svenfuchs/globalize3) but removes the need to
 maintain separate translation tables.
-
-[![Build Status](https://api.travis-ci.org/cfabianski/json_translate.png)](https://travis-ci.org/cfabianski/json_translate)
-[![License](http://img.shields.io/badge/license-mit-brightgreen.svg)](COPYRIGHT)
-[![Code Climate](https://codeclimate.com/github/cfabianski/json_translate.png)](https://codeclimate.com/github/cfabianski/json_translate)
 
 ## Requirements
 
