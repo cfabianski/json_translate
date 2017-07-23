@@ -26,8 +26,13 @@ module JSONTranslate
         end
 
         translation = translations[available.to_s]
-
-        I18n.interpolate(translation, params) if translation
+        # Rescue from MissingInterpolationArgument
+        # so the default behaviour doesn't change
+        begin
+          I18n.interpolate(translation, params) if translation
+        rescue I18n::MissingInterpolationArgument
+          translation
+        end
       end
 
       def write_json_translation(attr_name, value, locale = I18n.locale)
