@@ -18,8 +18,8 @@ module JSONTranslate
       ].flatten.compact
 
       attrs.each do |attr_name|
-        define_method attr_name do
-          read_json_translation(attr_name)
+        define_method attr_name do |**params|
+          read_json_translation(attr_name, params)
         end
 
         define_method "#{attr_name}=" do |value|

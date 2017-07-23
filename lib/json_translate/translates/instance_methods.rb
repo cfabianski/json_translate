@@ -18,14 +18,16 @@ module JSONTranslate
         I18n.fallbacks[locale]
       end
 
-      def read_json_translation(attr_name, locale = I18n.locale)
+      def read_json_translation(attr_name, locale = I18n.locale, **params)
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
         available = Array(json_translate_fallback_locales(locale)).detect do |available_locale|
           translations[available_locale.to_s].present?
         end
 
-        translations[available.to_s]
+        translation = translations[available.to_s]
+
+        I18n.interpolate(translation, params) if translation
       end
 
       def write_json_translation(attr_name, value, locale = I18n.locale)

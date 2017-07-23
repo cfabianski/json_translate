@@ -142,6 +142,14 @@ class TranslatesTest < JSONTranslate::Test
     end
   end
 
+  def test_with_translation_attributes
+    p = Post.create!(:title_translations => { "en" => "Alice in %{where}" })
+    I18n.with_locale(:en) do
+      assert_equal p.title(where: "Wonderland"), "Alice in Wonderland"
+    end
+    assert_equal p.title_en(where: "Wonderland"), "Alice in Wonderland"
+  end
+
   def test_class_method_translates?
     assert_equal true, Post.translates?
     assert_equal true, PostDetailed.translates?
