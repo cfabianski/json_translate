@@ -23,10 +23,14 @@ class JSONTranslate::Test < Minitest::Test
 
     private
 
+    def adapter
+      @adapter ||= ENV['DB'] || 'postgres'
+    end
+
     def db_config
       @db_config ||= begin
         filepath = File.join('test', 'database.yml')
-        YAML.load_file(filepath)['test']
+        YAML.load_file(filepath)[adapter]
       end
     end
 
@@ -36,16 +40,17 @@ class JSONTranslate::Test < Minitest::Test
     end
 
     def create_database
-      system_config = db_config.merge('database' => 'postgres', 'schema_search_path' => 'public')
+      system_config = db_config
       connection = establish_connection(system_config)
       connection.create_database(db_config['database']) rescue nil
     end
 
     def create_table
+      column_type = adapter == 'mysql' ? 'json' : 'jsonb'
       connection = establish_connection(db_config)
       connection.create_table(:posts, :force => true) do |t|
-        t.column :title_translations, 'jsonb'
-        t.column :comment_translations, 'jsonb'
+        t.column :title_translations, column_type
+        t.column :comment_translations, column_type
       end
     end
   end

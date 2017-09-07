@@ -1,6 +1,7 @@
 module JSONTranslate
   module Translates
     SUFFIX = "_translations".freeze
+    MYSQL_ADAPTERS = %w[MySQL Mysql2 Mysql2Spatial]
 
 
     def translates(*attrs)
@@ -29,7 +30,12 @@ module JSONTranslate
         define_singleton_method "with_#{attr_name}_translation" do |value, locale = I18n.locale|
           quoted_translation_store = connection.quote_column_name("#{attr_name}#{SUFFIX}")
           translation_hash = { "#{locale}" => value }
-          where("#{quoted_translation_store} @> :translation::jsonb", translation: translation_hash.to_json)
+
+          if MYSQL_ADAPTERS.include?(connection.adapter_name)
+            where("JSON_CONTAINS(#{quoted_translation_store}, :translation, '$')", translation: translation_hash.to_json)
+          else
+            where("#{quoted_translation_store} @> :translation::jsonb", translation: translation_hash.to_json)
+          end
         end
       end
 
