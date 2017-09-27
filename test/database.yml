@@ -1,6 +1,13 @@
-test:
+postgres:
   adapter:  postgresql
   host:     localhost
   database: json_translate_test
   username: postgres
+  schema_search_path: public
   min_messages: warning
+
+mysql:
+  adapter:  mysql2
+  host:     localhost
+  database: json_translate_test
+  username: root
