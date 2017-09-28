@@ -6,7 +6,7 @@
 # JSON Translate
 
 Rails I18n library for ActiveRecord model/data translation using PostgreSQL's
-JSONB datatype. It provides an interface inspired by
+JSONB datatype or MySQL's JSON datatype. It provides an interface inspired by
 [Globalize3](https://github.com/svenfuchs/globalize3) but removes the need to
 maintain separate translation tables.
 
@@ -14,6 +14,7 @@ maintain separate translation tables.
 
 * ActiveRecord >= 4.2.0
 * I18n
+* MySQL support requires ActiveRecord >= 5 and MySQL >= 5.7.8.
 
 ## Installation
 
@@ -25,8 +26,15 @@ When using bundler, put it in your Gemfile:
 source 'https://rubygems.org'
 
 gem 'activerecord'
+
+# PostgreSQL
 gem 'pg', :platform => :ruby
 gem 'activerecord-jdbcpostgresql-adapter', :platform => :jruby
+
+# or MySQL
+gem 'mysql2', :platform => :ruby
+gem 'activerecord-jdbcmysql-adapter', :platform => :jruby
+
 gem 'json_translate'
 ```
 
@@ -58,21 +66,21 @@ post.title # => This database rocks!
 post.title_he # => אתר זה טוב
 ```
 
-To find records using translations without constructing JSONB queries by hand:
+To find records using translations without constructing JSON queries by hand:
 
 ```ruby
 Post.with_title_translation("This database rocks!") # => #<ActiveRecord::Relation ...>
 Post.with_title_translation("אתר זה טוב", :he) # => #<ActiveRecord::Relation ...>
 ```
 
-In order to make this work, you'll need to define an JSONB column for each of
+In order to make this work, you'll need to define an JSON or JSONB column for each of
 your translated attributes, using the suffix "_translations":
 
 ```ruby
 class CreatePosts < ActiveRecord::Migration
   def up
     create_table :posts do |t|
-      t.column :title_translations, 'jsonb'
+      t.column :title_translations, 'jsonb' # or 'json' for MySQL
       t.column :body_translations,  'jsonb'
       t.timestamps
     end

@@ -6,15 +6,15 @@ module JSONTranslate
         super(symbol, include_all)
       end
 
-      def method_missing(method_name, *args)
+      def method_missing(method_name, *args, **params)
         translated_attr_name, locale, assigning = parse_translated_attribute_accessor(method_name)
 
-        return super(method_name, *args) unless translated_attr_name
+        return super(method_name, *args, **params) unless translated_attr_name
 
         if assigning
           write_json_translation(translated_attr_name, args.first, locale)
         else
-          read_json_translation(translated_attr_name, locale)
+          read_json_translation(translated_attr_name, locale, **params)
         end
       end
     end
