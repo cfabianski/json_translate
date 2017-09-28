@@ -7,7 +7,7 @@ DatabaseCleaner.strategy = :transaction
 I18n.available_locales = [:en, :fr]
 
 class Post < ActiveRecord::Base
-  translates :title
+  translates :title, :body_1
 end
 
 class PostDetailed < Post
@@ -50,6 +50,7 @@ class JSONTranslate::Test < Minitest::Test
       connection = establish_connection(db_config)
       connection.create_table(:posts, :force => true) do |t|
         t.column :title_translations, column_type
+        t.column :body_1_translations, column_type
         t.column :comment_translations, column_type
       end
     end
