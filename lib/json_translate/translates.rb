@@ -34,7 +34,7 @@ module JSONTranslate
           end
 
           define_method "#{attr_name}_#{normalized_locale}=" do |value|
-            write_json_translation(attr_name, locale, value)
+            write_json_translation(attr_name, value, locale)
           end
         end
 
