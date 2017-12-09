@@ -14,14 +14,17 @@ module JSONTranslate
       attr_reader :enabled_fallback
 
       def json_translate_fallback_locales(locale)
-        return locale if enabled_fallback == false || !I18n.respond_to?(:fallbacks)
-        I18n.fallbacks[locale]
+        if enabled_fallback == false || !I18n.respond_to?(:fallbacks)
+          Array(locale)
+        else
+          Array(I18n.fallbacks[locale])
+        end
       end
 
       def read_json_translation(attr_name, locale = I18n.locale, **params)
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
-        available = Array(json_translate_fallback_locales(locale)).detect do |available_locale|
+        available = json_translate_fallback_locales(locale).detect do |available_locale|
           translations[available_locale.to_s].present?
         end
 
