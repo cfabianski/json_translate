@@ -21,14 +21,17 @@ module JSONTranslate
         end
       end
 
-      def read_json_translation(attr_name, locale = I18n.locale, **params)
+      def read_json_translation(attr_name, locale = I18n.locale, fallback = true, **params)
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
-        available = json_translate_fallback_locales(locale).detect do |available_locale|
-          translations[available_locale.to_s].present?
+        selected_locale = locale
+        if fallback
+          selected_locale = json_translate_fallback_locales(locale).detect do |available_locale|
+            translations[available_locale.to_s].present?
+          end
         end
 
-        translation = translations[available.to_s]
+        translation = translations[selected_locale.to_s]
 
         if translation && params.present?
           begin
