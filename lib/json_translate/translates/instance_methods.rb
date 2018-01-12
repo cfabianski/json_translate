@@ -14,10 +14,10 @@ module JSONTranslate
       attr_reader :enabled_fallback
 
       def json_translate_fallback_locales(locale)
-        if enabled_fallback == false || !I18n.respond_to?(:fallbacks)
-          Array(locale)
-        else
+        if enabled_fallback != false && I18n.respond_to?(:fallbacks)
           Array(I18n.fallbacks[locale])
+        else
+          Array(locale)
         end
       end
 
@@ -44,10 +44,15 @@ module JSONTranslate
       end
 
       def write_json_translation(attr_name, value, locale = I18n.locale)
+        value = value.presence
         translation_store = "#{attr_name}#{SUFFIX}"
         translations = public_send(translation_store) || {}
         public_send("#{translation_store}_will_change!") unless translations[locale.to_s] == value
-        translations[locale.to_s] = value
+        if value
+          translations[locale.to_s] = value
+        else
+          translations.delete(locale.to_s)
+        end
         public_send("#{translation_store}=", translations)
         value
       end

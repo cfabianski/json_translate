@@ -58,6 +58,8 @@ class TranslatesTest < JSONTranslate::Test
       p = Post.new(:title_translations => { "en" => "English Title", "fr" => "Titre français" }, :body_1_translations => { "en" => "English Body", "fr" => "Corps anglais" })
       assert_equal("Titre français", p.title_fr)
       assert_equal("Corps anglais", p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
     end
   end
 
@@ -67,8 +69,12 @@ class TranslatesTest < JSONTranslate::Test
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
-      assert_equal("English Title", p.title_fr)
-      assert_equal("English Body", p.body_1_fr)
+      assert_equal("English Title", p.title)
+      assert_equal("English Body", p.body_1)
+      assert_nil(p.title_fr)
+      assert_nil(p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
     end
   end
 
@@ -78,8 +84,12 @@ class TranslatesTest < JSONTranslate::Test
 
     p = Post.new(:title_translations => { "en" => "English Title", "fr" => "" }, :body_1_translations => { "en" => "English Body", "fr" => "" })
     I18n.with_locale(:fr) do
-      assert_equal("English Title", p.title_fr)
-      assert_equal("English Body", p.body_1_fr)
+      assert_equal("English Title", p.title)
+      assert_equal("English Body", p.body)
+      assert_nil(p.title_fr)
+      assert_nil(p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
     end
   end
 
@@ -90,8 +100,8 @@ class TranslatesTest < JSONTranslate::Test
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
     I18n.with_locale(:fr) do
-      assert_nil(p.title_fr)
-      assert_nil(p.body_1_fr)
+      assert_nil(p.title)
+      assert_nil(p.body_1)
     end
   end
 
@@ -102,11 +112,21 @@ class TranslatesTest < JSONTranslate::Test
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.enable_fallback
 
-    assert_equal("English Title", p.title_fr)
-    assert_equal("English Body", p.body_1_fr)
-    p.disable_fallback do
-      assert_nil p.title_fr
-      assert_nil p.body_1_fr
+    I18n.with_locale(:fr) do
+      assert_equal("English Title", p.title)
+      assert_equal("English Body", p.body_1)
+      assert_nil(p.title_fr)
+      assert_nil(p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
+      p.disable_fallback do
+        assert_nil(p.title)
+        assert_nil(p.body_1)
+        assert_nil(p.title_fr)
+        assert_nil(p.body_1_fr)
+        assert_equal("English Title", p.title_en)
+        assert_equal("English Body", p.body_1_en)
+      end
     end
   end
 
@@ -118,8 +138,12 @@ class TranslatesTest < JSONTranslate::Test
     p.disable_fallback
     p.enable_fallback
     I18n.with_locale(:fr) do
-      assert_equal("English Title", p.title_fr)
-      assert_equal("English Body", p.body_1_fr)
+      assert_equal("English Title", p.title)
+      assert_equal("English Body", p.body_1)
+      assert_nil(p.title_fr)
+      assert_nil(p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
     end
   end
 
@@ -130,11 +154,21 @@ class TranslatesTest < JSONTranslate::Test
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
 
-    assert_nil(p.title_fr)
-    assert_nil(p.body_1_fr)
-    p.enable_fallback do
-      assert_equal("English Title", p.title_fr)
-      assert_equal("English Body", p.body_1_fr)
+    I18n.with_locale(:fr) do
+      assert_nil(p.title)
+      assert_nil(p.body_1)
+      assert_nil(p.title_fr)
+      assert_nil(p.body_1_fr)
+      assert_equal("English Title", p.title_en)
+      assert_equal("English Body", p.body_1_en)
+      p.enable_fallback do
+        assert_equal("English Title", p.title)
+        assert_equal("English Body", p.body_1)
+        assert_nil(p.title_fr)
+        assert_nil(p.body_1_fr)
+        assert_equal("English Title", p.title_en)
+        assert_equal("English Body", p.body_1_en)
+      end
     end
   end
 
