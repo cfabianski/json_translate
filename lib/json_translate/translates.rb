@@ -30,7 +30,7 @@ module JSONTranslate
           normalized_locale = locale.to_s.downcase.gsub(/[^a-z]/, '')
 
           define_method :"#{attr_name}_#{normalized_locale}" do |**params|
-            read_json_translation(attr_name, locale, false, params)
+            read_json_translation(attr_name, locale, params)
           end
 
           define_method "#{attr_name}_#{normalized_locale}=" do |value|
