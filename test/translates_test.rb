@@ -119,14 +119,16 @@ class TranslatesTest < JSONTranslate::Test
       assert_nil(p.body_1_fr)
       assert_equal("English Title", p.title_en)
       assert_equal("English Body", p.body_1_en)
-      p.disable_fallback do
+      yielded = p.disable_fallback do
         assert_nil(p.title)
         assert_nil(p.body_1)
         assert_nil(p.title_fr)
         assert_nil(p.body_1_fr)
         assert_equal("English Title", p.title_en)
         assert_equal("English Body", p.body_1_en)
+        :block_return_value
       end
+      assert_equal(:block_return_value, yielded)
     end
   end
 
@@ -161,14 +163,16 @@ class TranslatesTest < JSONTranslate::Test
       assert_nil(p.body_1_fr)
       assert_equal("English Title", p.title_en)
       assert_equal("English Body", p.body_1_en)
-      p.enable_fallback do
+      yielded = p.enable_fallback do
         assert_equal("English Title", p.title)
         assert_equal("English Body", p.body_1)
         assert_nil(p.title_fr)
         assert_nil(p.body_1_fr)
         assert_equal("English Title", p.title_en)
         assert_equal("English Body", p.body_1_en)
+        :block_return_value
       end
+      assert_equal(:block_return_value, yielded)
     end
   end
 

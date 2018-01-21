@@ -3,10 +3,12 @@ module JSONTranslate
     module InstanceMethods
       def disable_fallback
         toggle_fallback(false)
+        yield if block_given?
       end
 
       def enable_fallback
         toggle_fallback(true)
+        yield if block_given?
       end
 
       protected
