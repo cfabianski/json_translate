@@ -25,7 +25,7 @@ class TranslatesTest < JSONTranslate::Test
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
 
-    p = Post.new(:title_translations => {"en" => "English Title"}, :body_1_translations => { "en" => "English Body" })
+    p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
       assert_equal("English Title", p.title)
       assert_equal("English Body", p.body_1)
@@ -187,15 +187,15 @@ class TranslatesTest < JSONTranslate::Test
   def test_persists_translations_assigned_as_hash
     p = Post.create!(:title_translations => { "en" => "English Title", "fr" => "Titre français" }, :body_1_translations => { "en" => "English Body", "fr" => "Corps anglais" })
     p.reload
-    assert_equal({"en" => "English Title", "fr" => "Titre français"}, p.title_translations)
-    assert_equal({"en" => "English Body", "fr" => "Corps anglais"}, p.body_1_translations)
+    assert_equal({ "en" => "English Title", "fr" => "Titre français" }, p.title_translations)
+    assert_equal({ "en" => "English Body", "fr" => "Corps anglais" }, p.body_1_translations)
   end
 
   def test_persists_translations_assigned_to_localized_accessors
     p = Post.create!(:title_en => "English Title", :title_fr => "Titre français", :body_1_en => "English Body", :body_1_fr => "Corps anglais")
     p.reload
-    assert_equal({"en" => "English Title", "fr" => "Titre français"}, p.title_translations)
-    assert_equal({"en" => "English Body", "fr" => "Corps anglais"}, p.body_1_translations)
+    assert_equal({ "en" => "English Title", "fr" => "Titre français" }, p.title_translations)
+    assert_equal({ "en" => "English Body", "fr" => "Corps anglais" }, p.body_1_translations)
   end
 
   def test_with_translation_relation
@@ -250,5 +250,28 @@ class TranslatesTest < JSONTranslate::Test
 
   def test_permitted_translated_attributes
     assert_equal [:title_en, :title_fr, :body_1_en, :body_1_fr, :comment_en, :comment_fr], PostDetailed.permitted_translated_attributes
+  end
+
+
+  def test_empty_string_fallback
+    p = PostDetailed.create!(
+      :title_translations => {
+        en: 'Alice in Wonderland',
+        fr: ''
+      },
+      :body_1_translations => {
+        en: '',
+        fr: 'Corps anglais'
+      },
+      :comment_translations => {
+        en: 'Awesome book',
+        fr: ''
+      }
+    )
+
+    I18n.with_locale(:en) { assert_equal 'Alice in Wonderland', p.title }
+    I18n.with_locale(:fr) { assert_equal 'Alice in Wonderland', p.title }
+    I18n.with_locale(:en) { assert_equal 'Awesome book', p.comment }
+    I18n.with_locale(:fr) { assert_equal 'Awesome book', p.comment }
   end
 end
