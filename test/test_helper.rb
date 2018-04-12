@@ -11,7 +11,7 @@ class Post < ActiveRecord::Base
 end
 
 class PostDetailed < Post
-  translates :comment
+  translates :comment, fallbacks_for_empty_translations: true
 end
 
 class JSONTranslate::Test < Minitest::Test
