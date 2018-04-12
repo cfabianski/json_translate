@@ -256,22 +256,29 @@ class TranslatesTest < JSONTranslate::Test
   def test_empty_string_fallback
     p = PostDetailed.create!(
       :title_translations => {
-        en: 'Alice in Wonderland',
-        fr: ''
+        en: "Alice in Wonderland",
+        fr: ""
       },
       :body_1_translations => {
-        en: '',
-        fr: 'Corps anglais'
+        en: "",
+        fr: "Corps anglais"
       },
       :comment_translations => {
-        en: 'Awesome book',
-        fr: ''
+        en: "Awesome book",
+        fr: ""
       }
     )
+    p.enable_fallback
 
     I18n.with_locale(:en) { assert_equal 'Alice in Wonderland', p.title }
     I18n.with_locale(:fr) { assert_equal 'Alice in Wonderland', p.title }
     I18n.with_locale(:en) { assert_equal 'Awesome book', p.comment }
     I18n.with_locale(:fr) { assert_equal 'Awesome book', p.comment }
+
+    p.disable_fallback
+    I18n.with_locale(:en) { assert_equal 'Alice in Wonderland', p.title }
+    I18n.with_locale(:fr) { assert_nil p.title }
+    I18n.with_locale(:en) { assert_equal 'Awesome book', p.comment }
+    I18n.with_locale(:fr) { assert_nil p.comment }
   end
 end

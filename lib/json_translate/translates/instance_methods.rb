@@ -32,7 +32,7 @@ module JSONTranslate
           selected_locale = json_translate_fallback_locales(locale).detect do |available_locale|
             selected = translations[available_locale.to_s].present?
             if fallbacks_for_empty_translations
-              selected &&= translations[available_locale.to_s] != ''
+              selected &&= translations[available_locale.to_s].empty?
             end
             selected
           end

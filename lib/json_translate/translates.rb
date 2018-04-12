@@ -3,7 +3,7 @@ module JSONTranslate
     SUFFIX = "_translations".freeze
     MYSQL_ADAPTERS = %w[MySQL Mysql2 Mysql2Spatial]
 
-    def translates(*attrs, **fallback)
+    def translates(*attrs)
       include InstanceMethods
 
       class_attribute :translated_attribute_names, :permitted_translated_attributes

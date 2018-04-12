@@ -103,9 +103,32 @@ only `config/environments/production.rb` if you only want them in production)
 ```ruby
 config.i18n.fallbacks = true
 ```
-
 Sven Fuchs wrote a [detailed explanation of the fallback
 mechanism](https://github.com/svenfuchs/i18n/wiki/Fallbacks).
+
+## I18n fallbacks for empty translations
+It is possible to enable fallbacks for missing translations. 
+By default, JSON_translate will only use fallbacks when your translation 
+JSON column does not exist or the translation value for the item you've request is nil.
+However it is possible to use fallbacks for empty translations by adding 
+`:fallbacks_for_empty_translations => true` to the `translates` method
+
+```ruby
+class Post < ActiveRecord::Base
+  translates :title, :name, :fallbacks_for_empty_translations => true
+end
+
+puts post.inspect
+# => <PostDetailed id: 1, title_translations: {"en"=>"This database rocks", "nl"=>""}, name: {"en"=>"PostgreSQL", "nl"=>""}>
+
+I18n.locale = :en
+post.title # => 'This database rocks!'
+post.name  # => 'PostgreSQL'
+
+I18n.locale = :nl
+post.title # => 'This database rocks!'
+post.name  # => 'PostgreSQL'
+```
 
 ## Temporarily disable fallbacks
 
