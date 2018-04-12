@@ -23,7 +23,7 @@ module JSONTranslate
         end
       end
 
-      def read_json_translation(attr_name, locale = I18n.locale, fallback = true, fallbacks_for_empty_translations = false, **params)
+      def read_json_translation(attr_name, locale = I18n.locale, fallback = true, fallbacks_for_empty_translations: false, **params)
 
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
@@ -32,7 +32,7 @@ module JSONTranslate
           selected_locale = json_translate_fallback_locales(locale).detect do |available_locale|
             selected = translations[available_locale.to_s].present?
             if fallbacks_for_empty_translations
-              selected &&= translations[available_locale.to_s].empty?
+              selected &&= !translations[available_locale.to_s].empty?
             end
             selected
           end
