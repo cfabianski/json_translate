@@ -238,6 +238,14 @@ class TranslatesTest < JSONTranslate::Test
     end
   end
 
+  def test_with_translation_when_ambiguous_column
+    p = Post.create!(:title_translations => { "en" => "Alice in Wonderland", "fr" => "Alice au pays des merveilles" })
+    Tag.create!(:title_translations => { "en" => "A Tag", "fr" => "Un tag" }, post: p)
+    I18n.with_locale(:en) do
+      assert_equal p.title_en, Post.tagged("A Tag").first.try(:title)
+    end
+  end
+
   def test_with_interpolation_arguments
     p = Post.create!(:title_translations => { "en" => "Alice in %{where}" })
     I18n.with_locale(:en) do
