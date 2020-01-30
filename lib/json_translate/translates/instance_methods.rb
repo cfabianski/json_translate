@@ -58,6 +58,8 @@ module JSONTranslate
       end
 
       def write_json_translation(attr_name, value, locale = I18n.locale)
+        return assign_attributes({attr_name => value}) unless enabled_translations
+
         value = value.presence
         translation_store = "#{attr_name}#{SUFFIX}"
         translations = public_send(translation_store) || {}
