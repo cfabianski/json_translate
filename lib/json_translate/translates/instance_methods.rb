@@ -11,9 +11,19 @@ module JSONTranslate
         yield if block_given?
       end
 
+      def disable_translations
+        toggle_translations(false)
+        yield if block_given?
+      end
+
+      def enable_translations
+        toggle_translations(true)
+        yield if block_given?
+      end
+
       protected
 
-      attr_reader :enabled_fallback
+      attr_reader :enabled_fallback, :enabled_translations
 
       def json_translate_fallback_locales(locale)
         if enabled_fallback != false && I18n.respond_to?(:fallbacks)
@@ -24,6 +34,8 @@ module JSONTranslate
       end
 
       def read_json_translation(attr_name, locale = I18n.locale, fallback = true, **params)
+        return attributes["#{attr_name}"] unless enabled_translations
+
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
         selected_locale = locale
@@ -70,6 +82,20 @@ module JSONTranslate
           end
         else
           @enabled_fallback = enabled
+        end
+      end
+
+      def toggle_translations(enabled)
+        if block_given?
+          old_value = @enabled_translations
+          begin
+            @enabled_translations = enabled
+            yield
+          ensure
+            @enabled_translations = old_value
+          end
+        else
+          @enabled_translations = enabled
         end
       end
     end
