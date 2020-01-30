@@ -145,3 +145,55 @@ post.enable_fallback do
   post.title_nl # => This database rocks!
 end
 ```
+
+## Temporarily disable translations / Migrating Data
+
+If you are integrating this gem to an application with existing data, you are probably concerned about how to migrate your data from the untranslated column to your new `attr_translations` column. You can easily disable translations to do what you need when migrating the data over.
+
+Older Schema:
+```ruby
+class CreatePosts < ActiveRecord::Migration
+  def up
+    create_table :posts do |t|
+      t.column :title, :string
+      t.timestamps
+    end
+  end
+  def down
+    drop_table :posts
+  end
+end
+```
+Let's say you originally had something important saved in `title`:
+```ruby
+post.title  = "something important"
+```
+
+You might think it disappeared, but with disable_translations you can still get the old data.
+
+From:
+
+```ruby
+post.title # => nil
+```
+
+To:
+
+```ruby
+post.title # => nil
+post.disable_translations
+post.title # => "something important"
+```
+
+To migrate data, you could do something like:
+
+```ruby
+post.disable_translations
+migrated_title = post.title
+post.enable_translations
+
+I18n.locale = :en
+post.title = migrated_title
+```
+
+
