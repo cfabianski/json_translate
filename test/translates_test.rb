@@ -24,6 +24,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_current_locale_with_fallbacks
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => {"en" => "English Title"}, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
@@ -39,6 +40,31 @@ class TranslatesTest < JSONTranslate::Test
       p.body_1_fr = "Corps anglais"
       assert_equal("Titre français", p.title_translations["fr"])
       assert_equal("Corps anglais", p.body_1_translations["fr"])
+    end
+  end
+
+  def test_assigns_nil_value_as_standard
+    I18n.with_locale(:en) do
+      p = Post.new(:title_translations => { "en" => "English Title" })
+      p.title_fr = ""
+      p.title = ""
+      assert_nil(p.title_translations["fr"])
+      assert_nil(p.title_translations["en"])
+    end
+  end
+
+  def test_assigns_blank_value_when_active
+    # when allow_blank: true option is active
+    I18n.with_locale(:en) do
+      p = PostDetailed.new(:comment_translations => { "en" => "English Comment" }, :title_translations => { "en" => "English Comment" })
+      p.comment_fr = ""
+      p.comment = ""
+      p.title_en = nil
+      p.title = nil
+      assert_equal("", p.comment_translations["fr"])
+      assert_equal("", p.comment_translations["en"])
+      assert_nil(p.title_translations["en"])
+      assert_nil(p.title_translations["en"])
     end
   end
 
@@ -66,6 +92,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_specified_locale_with_fallbacks
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
@@ -81,6 +108,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_fallback_from_empty_string
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title", "fr" => "" }, :body_1_translations => { "en" => "English Body", "fr" => "" })
     I18n.with_locale(:fr) do
@@ -96,6 +124,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_specified_locale_with_fallback_disabled
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
@@ -108,6 +137,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_specified_locale_with_fallback_disabled_using_a_block
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.enable_fallback
@@ -135,6 +165,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_specified_locale_with_fallback_reenabled
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
@@ -152,6 +183,7 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_specified_locale_with_fallback_reenabled_using_a_block
     I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
     I18n.default_locale = :"en-US"
+    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
 
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback

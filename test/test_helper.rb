@@ -11,7 +11,7 @@ class Post < ActiveRecord::Base
 end
 
 class PostDetailed < Post
-  translates :comment
+  translates :comment, allow_blank: true
 end
 
 class JSONTranslate::Test < Minitest::Test
