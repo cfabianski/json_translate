@@ -45,8 +45,8 @@ module JSONTranslate
         translation
       end
 
-      def write_json_translation(attr_name, value, locale = I18n.locale)
-        value = value.presence
+      def write_json_translation(attr_name, value, locale = I18n.locale, allow_blank: false)
+        value = allow_blank ? value : value.presence
         translation_store = "#{attr_name}#{SUFFIX}"
         translations = public_send(translation_store) || {}
         public_send("#{translation_store}_will_change!") unless translations[locale.to_s] == value

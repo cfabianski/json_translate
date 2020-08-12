@@ -145,3 +145,34 @@ post.enable_fallback do
   post.title_nl # => This database rocks!
 end
 ```
+
+## Enable blank value translations
+
+By default, empty String values are not stored, instead the locale is deleted.
+
+```ruby
+class Post < ActiveRecord::Base
+  translates :title
+end
+
+post.title_translations # => { en: 'Hello', fr: 'Bonjour' }
+post.title_en = ""
+post.title_translations # => { fr: 'Bonjour' }
+```
+
+Activating `allow_blank: true` enables to store empty String values.
+```ruby
+class Post < ActiveRecord::Base
+  translates :title, allow_blank: true
+end
+
+post.title_translations # => { en: 'Hello', fr: 'Bonjour' }
+post.title_en = ""
+post.title_translations # => { en: '', fr: 'Bonjour' }
+```
+
+`nil` value delete the locale key/value anyway.
+```ruby
+post.title_en = nil
+post.title_translations # => { fr: 'Bonjour' }
+```

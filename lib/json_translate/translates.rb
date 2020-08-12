@@ -3,7 +3,7 @@ module JSONTranslate
     SUFFIX = "_translations".freeze
     MYSQL_ADAPTERS = %w[MySQL Mysql2 Mysql2Spatial]
 
-    def translates(*attrs)
+    def translates(*attrs, allow_blank: false)
       include InstanceMethods
 
       class_attribute :translated_attribute_names, :permitted_translated_attributes
@@ -23,7 +23,7 @@ module JSONTranslate
         end
 
         define_method "#{attr_name}=" do |value|
-          write_json_translation(attr_name, value)
+          write_json_translation(attr_name, value, allow_blank: allow_blank)
         end
 
         I18n.available_locales.each do |locale|
@@ -34,7 +34,7 @@ module JSONTranslate
           end
 
           define_method "#{attr_name}_#{normalized_locale}=" do |value|
-            write_json_translation(attr_name, value, locale)
+            write_json_translation(attr_name, value, locale, allow_blank: allow_blank)
           end
         end
 
