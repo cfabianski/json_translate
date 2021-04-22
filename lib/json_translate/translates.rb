@@ -48,6 +48,16 @@ module JSONTranslate
             where("#{quoted_translation_store} @> :translation::jsonb", translation: translation_hash.to_json)
           end
         end
+
+        define_singleton_method "order_by_#{attr_name}_translation" do |direction = :asc, locale = I18n.locale|
+          quoted_translation_store = connection.quote_column_name("#{attr_name}#{SUFFIX}")
+
+          if MYSQL_ADAPTERS.include?(connection.adapter_name)
+            order(Arel.sql("JSON_EXTRACT(#{quoted_translation_store}, '$.\"#{locale}\"') #{direction}"))
+          else
+            order(Arel.sql("#{quoted_translation_store} ->> '#{locale}' #{direction}"))
+          end
+        end
       end
     end
 

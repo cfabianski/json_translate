@@ -73,6 +73,15 @@ Post.with_title_translation("This database rocks!") # => #<ActiveRecord::Relatio
 Post.with_title_translation("אתר זה טוב", :he) # => #<ActiveRecord::Relation ...>
 ```
 
+To order records using translations without constructing JSON queries by hand:
+
+```ruby
+Post.order_by_title_translation # => #<ActiveRecord::Relation ...>
+Post.order_by_title_translation(:asc) # => #<ActiveRecord::Relation ...>
+Post.order_by_title_translation(:desc) # => #<ActiveRecord::Relation ...>
+Post.order_by_title_translation(:desc, :he) # => #<ActiveRecord::Relation ...>
+```
+
 In order to make this work, you'll need to define an JSON or JSONB column for each of
 your translated attributes, using the suffix "_translations":
 

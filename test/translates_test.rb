@@ -210,6 +210,17 @@ class TranslatesTest < JSONTranslate::Test
     end
   end
 
+  def test_order_by_translation
+    p = Post.create!(:title_translations => { "en" => "Alice in Wonderland", "fr" => "Alice au pays des merveilles" }, :body_1_translations => { "en" => "English Body", "fr" => "Corps anglais" })
+    p2 = Post.create!(:title_translations => { "en" => "Zoolander", "fr" => "Zoolandia" }, :body_1_translations => { "en" => "English Body", "fr" => "Corps anglais" })
+    I18n.with_locale(:en) do
+      assert_equal p.title_en, Post.order_by_title_translation.first.try(:title)
+      assert_equal p.title_en, Post.order_by_title_translation(:asc).first.try(:title)
+      assert_equal p2.title_en, Post.order_by_title_translation(:desc).first.try(:title)
+      assert_equal p2.title_en, Post.order_by_title_translation(:desc, :fr).first.try(:title)
+    end
+  end
+
   def test_with_interpolation_arguments
     p = Post.create!(:title_translations => { "en" => "Alice in %{where}" })
     I18n.with_locale(:en) do
