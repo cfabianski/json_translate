@@ -23,7 +23,7 @@ module JSONTranslate
         end
       end
 
-      def read_json_translation(attr_name, locale = I18n.locale, fallback = true, **params)
+      def read_json_translation(attr_name, locale: I18n.locale, fallback: true, **params)
         translations = public_send("#{attr_name}#{SUFFIX}") || {}
 
         selected_locale = locale
@@ -45,7 +45,7 @@ module JSONTranslate
         translation
       end
 
-      def write_json_translation(attr_name, value, locale = I18n.locale, allow_blank: false)
+      def write_json_translation(attr_name, value, locale: I18n.locale, allow_blank:)
         value = allow_blank ? value : value.presence
         translation_store = "#{attr_name}#{SUFFIX}"
         translations = public_send(translation_store) || {}

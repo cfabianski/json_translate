@@ -40,8 +40,7 @@ class JSONTranslate::Test < Minitest::Test
     end
 
     def create_database
-      system_config = db_config
-      connection = establish_connection(system_config)
+      connection = establish_connection(db_config)
       connection.create_database(db_config['database']) rescue nil
     end
 
@@ -61,6 +60,8 @@ class JSONTranslate::Test < Minitest::Test
   def setup
     I18n.available_locales = ['en', 'en-US', 'fr']
     I18n.config.enforce_available_locales = true
+    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
+    I18n.fallbacks = I18n.available_locales
     DatabaseCleaner.start
   end
 
