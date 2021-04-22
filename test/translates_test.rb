@@ -13,19 +13,15 @@ class TranslatesTest < JSONTranslate::Test
   def test_retrieves_in_current_locale
     p = Post.new(
       :title_translations => { "en" => "English Title", "fr" => "Titre français" },
-      :body_1_translations => { "en" => "English Body", "fr" => "Corps anglais" }
+      :body_1_translations => { "en" => "English Body", "fr" => "Corps français" }
     )
     I18n.with_locale(:fr) do
       assert_equal("Titre français", p.title)
-      assert_equal("Corps anglais", p.body_1)
+      assert_equal("Corps français", p.body_1)
     end
   end
 
   def test_retrieves_in_current_locale_with_fallbacks
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => {"en" => "English Title"}, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
       assert_equal("English Title", p.title)
@@ -90,10 +86,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_retrieves_in_specified_locale_with_fallbacks
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     I18n.with_locale(:fr) do
       assert_equal("English Title", p.title)
@@ -106,10 +98,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_fallback_from_empty_string
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title", "fr" => "" }, :body_1_translations => { "en" => "English Body", "fr" => "" })
     I18n.with_locale(:fr) do
       assert_equal("English Title", p.title)
@@ -122,10 +110,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_retrieves_in_specified_locale_with_fallback_disabled
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
     I18n.with_locale(:fr) do
@@ -135,10 +119,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_retrieves_in_specified_locale_with_fallback_disabled_using_a_block
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.enable_fallback
 
@@ -163,10 +143,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_retrieves_in_specified_locale_with_fallback_reenabled
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
     p.enable_fallback
@@ -181,10 +157,6 @@ class TranslatesTest < JSONTranslate::Test
   end
 
   def test_retrieves_in_specified_locale_with_fallback_reenabled_using_a_block
-    I18n::Backend::Simple.include(I18n::Backend::Fallbacks)
-    I18n.default_locale = :"en-US"
-    I18n.fallbacks = I18n::Locale::Fallbacks.new(fr: :"en-US")
-
     p = Post.new(:title_translations => { "en" => "English Title" }, :body_1_translations => { "en" => "English Body" })
     p.disable_fallback
 
