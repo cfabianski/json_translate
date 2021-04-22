@@ -7,7 +7,15 @@ DatabaseCleaner.strategy = :transaction
 I18n.available_locales = [:en, :fr]
 
 class Post < ActiveRecord::Base
+  has_many :tags
   translates :title, :body_1
+
+  scope :tagged, -> (tag_title) { joins(:tags).merge(Tag.with_title_translation(tag_title)) }
+end
+
+class Tag < ActiveRecord::Base
+  belongs_to :post
+  translates :title
 end
 
 class PostDetailed < Post
@@ -51,6 +59,10 @@ class JSONTranslate::Test < Minitest::Test
         t.column :title_translations, column_type
         t.column :body_1_translations, column_type
         t.column :comment_translations, column_type
+      end
+      connection.create_table(:tags, :force => true) do |t|
+        t.column :title_translations, column_type
+        t.column :post_id, :integer
       end
     end
   end

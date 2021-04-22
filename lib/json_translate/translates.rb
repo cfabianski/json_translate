@@ -39,7 +39,7 @@ module JSONTranslate
         end
 
         define_singleton_method "with_#{attr_name}_translation" do |value, locale = I18n.locale|
-          quoted_translation_store = connection.quote_column_name("#{attr_name}#{SUFFIX}")
+          quoted_translation_store = connection.quote_table_name("#{self.table_name}.#{attr_name}#{SUFFIX}")
           translation_hash = { "#{locale}" => value }
 
           if MYSQL_ADAPTERS.include?(connection.adapter_name)
